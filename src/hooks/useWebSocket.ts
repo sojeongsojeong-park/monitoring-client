@@ -34,7 +34,6 @@ const useWebSocket = (url: string) => {
 			ws.onmessage = (event) => {
 				try {
 					const parsed = JSON.parse(event.data);
-					console.log({ parsed });
 					setData({ status: Status.ok, data: parsed });
 				} catch (e) {
 					console.error('Failed to parse:', e);

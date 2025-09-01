@@ -7,7 +7,7 @@ export interface Data {
 
 export interface FetchingError {
 	status: Status.error;
-	error: string;
+	data: string;
 }
 
 export interface ServerData {
@@ -45,7 +45,7 @@ export enum Status {
 	reconnecting = 'reconnecting',
 }
 
-type Region =
+export type Region =
 	| 'us-east'
 	| 'eu-west'
 	| 'eu-central'
@@ -65,5 +65,5 @@ interface WorkerStats {
 	top_keys: TopKey[];
 }
 
-type BlockedKey = [string, number, string];
-type TopKey = [string, number];
+export type BlockedKey = [string, number, string];
+export type TopKey = [string, number];
