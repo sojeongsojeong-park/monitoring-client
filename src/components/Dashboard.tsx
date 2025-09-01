@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { Status, type Data } from '../types/types';
 import Box from './ui/Box';
 import RegionCard from './ui/RegionCard';
@@ -11,19 +12,12 @@ const Dashboard = ({ data }: DashboardProps) => {
 	const servers = data.data;
 
 	return (
-		<div className='flex flex-col w-full gap-4 mx-8'>
-			<div className='flex justify-center gap-4'>
-				<Box>
-					<div className='text-sm'>
-						HEALTH <br />
-						CHECK
-					</div>
-					<div>{data.status === Status.ok ? '🟢' : '🔴'}</div>
-				</Box>
-				<div>
-					<div> UPDATE AT: {data.update_at.toLocaleString()}</div>
-				</div>
-			</div>
+		<div className='flex flex-col items-center w-full gap-4 mx-8'>
+			<Box className='py-2'>
+				<div className='text-sm'>HEALTH CHECK</div>
+				<div>{data.status === Status.ok ? '🟢' : '🔴'}</div>
+			</Box>
+			<p>UPDATE AT: {dayjs(data.update_at).format('YYYY.MM.DD HH:mm')}</p>
 
 			{data.server_issue && (
 				<p className='text-2xl text-center text-red-500'>{data.server_issue}</p>
