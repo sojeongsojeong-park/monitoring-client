@@ -1,4 +1,5 @@
 import Dashboard from './components/Dashboard';
+import Footer from './components/Footer';
 import Header from './components/Header';
 import Loading from './components/ui/Loading';
 import useWebSocket from './hooks/useWebSocket';
@@ -12,7 +13,7 @@ function App() {
 	return (
 		<div className='w-full bg-gray-50'>
 			<Header />
-			<main className='flex justify-center min-h-screen pt-24'>
+			<main className='flex justify-center min-h-screen py-24'>
 				{!data ? (
 					<Loading />
 				) : data.status === Status.ok ? (
@@ -25,6 +26,7 @@ function App() {
 					<p className='text-red-500'>Error: {data.data}</p>
 				)}
 			</main>
+			<Footer />
 		</div>
 	);
 }
