@@ -1,60 +1,43 @@
-import type { Data } from '../types/types';
+import { Status, type Data } from '../types/types';
 import Box from './ui/Box';
+import RegionCard from './ui/RegionCard';
 
 interface DashboardProps {
-	data?: Data;
+	data: Data;
 }
 
 const Dashboard = ({ data }: DashboardProps) => {
-	if (!data) {
-		return <p className='text-gray-500'>Waiting for data...</p>;
-	}
-
-	if (data.status !== 'ok') {
-		return <p className='text-red-500'>Error: {data.status}</p>;
-	}
-
-	const server = data.data;
+	console.log(data);
+	const servers = data.data;
 
 	return (
-		<div className='flex flex-col gap-4'>
-			<div className='flex gap-4'>
+		<div className='flex flex-col w-full gap-4 mx-8'>
+			<div className='flex justify-center gap-4'>
 				<Box>
 					<div className='text-sm'>
 						HEALTH <br />
 						CHECK
 					</div>
-					<div>{data.status === 'ok' ? '🟢' : '🔴'}</div>
+					<div>{data.status === Status.ok ? '🟢' : '🔴'}</div>
 				</Box>
 				<div>
-					<div> VERSION: {server.version}</div>
-					<div> UPDATE AT: </div>
+					<div> UPDATE AT: {data.update_at.toLocaleString()}</div>
 				</div>
 			</div>
-			{server.server_issue && (
-				<p className='text-2xl text-center text-red-500'>
-					{server.server_issue}
-				</p>
+
+			{data.server_issue && (
+				<p className='text-2xl text-center text-red-500'>{data.server_issue}</p>
 			)}
-			<div>
-				<Box className='flex-col gap-2'>
-					<div className='text-center'>{server.region}</div>
-					<div>
-						{server.roles.map((role) => (
-							<span
-								key={role}
-								className='px-2 py-1 text-xs bg-gray-100 rounded'>
-								{role}
-							</span>
-						))}
-					</div>
-					<div className='flex items-center gap-2'>
-						<span>Redis: {server.results.services.redis ? '🟢' : '🔴'}</span>
-						<span>
-							Database: {server.results.services.database ? '🟢' : '🔴'}
-						</span>
-					</div>
-				</Box>
+			<div className='grid gap-4 grid-col-1 sm:grid-cols-2 sm:grid-rows-3'>
+				{servers.map((server) =>
+					server.status == Status.ok ? (
+						<RegionCard key={server.region} {...server} />
+					) : (
+						<Box className='justify-center py-4 text-center shadow-red-300'>
+							❌ {server.error}
+						</Box>
+					)
+				)}
 			</div>
 		</div>
 	);
