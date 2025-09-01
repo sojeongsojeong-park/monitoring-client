@@ -1,24 +1,79 @@
-import { useEffect, useState } from 'react';
-import type { Data } from '../types/types';
+import { useEffect, useRef, useState } from 'react';
+import { Status, type Data } from '../types/types';
+
+interface SuccessWebsocketData {
+	status: Status.ok;
+	data: Data;
+}
+
+interface ErrorWebsocketData {
+	status: Status.error | Status.reconnecting | Status.loading;
+	data: string;
+}
+type WebsocketData = SuccessWebsocketData | ErrorWebsocketData;
 
 const useWebSocket = (url: string) => {
-	const [data, setData] = useState<Data>();
+	const [data, setData] = useState<WebsocketData>();
+	const reconnectAttempts = useRef(0);
+	const wsRef = useRef<WebSocket | null>(null);
 
 	useEffect(() => {
-		const ws = new WebSocket(url);
+		let isMounted = true;
 
-		ws.onopen = () => console.log('✅ Connected to server');
-		ws.onmessage = (event) => {
-			try {
-				const parsed = JSON.parse(event.data);
-				setData(parsed);
-			} catch (e) {
-				console.error('Failed to parse:', e);
-			}
+		const connect = () => {
+			if (!isMounted) return;
+			const ws = new WebSocket(url);
+			wsRef.current = ws;
+
+			ws.onopen = () => {
+				console.log('✅ Connected to server');
+				setData({ status: Status.loading, data: 'Loading...' });
+				reconnectAttempts.current = 0;
+			};
+
+			ws.onmessage = (event) => {
+				try {
+					const parsed = JSON.parse(event.data);
+					console.log({ parsed });
+					setData({ status: Status.ok, data: parsed });
+				} catch (e) {
+					console.error('Failed to parse:', e);
+				}
+			};
+
+			ws.onerror = (err) => {
+				console.error('❌ WebSocket error:', err);
+				setData({ status: Status.error, data: '❌ WebSocket error' });
+				reconnect();
+			};
+
+			ws.onclose = () => {
+				reconnect();
+			};
 		};
-		ws.onerror = (err) => console.error('❌ WebSocket error:', err);
 
-		return () => ws.close();
+		const reconnect = () => {
+			if (!isMounted) return;
+
+			const timeout = Math.min(1000 * 2 ** reconnectAttempts.current, 30000);
+			console.log(`🔄 Attempting to reconnect in ${timeout / 1000}s...`);
+			setData({
+				status: Status.reconnecting,
+				data: `🔄 Attempting to reconnect in ${timeout / 1000}s...`,
+			});
+			reconnectAttempts.current += 1;
+
+			setTimeout(() => {
+				connect();
+			}, timeout);
+		};
+
+		connect();
+
+		return () => {
+			isMounted = false;
+			wsRef.current?.close();
+		};
 	}, [url]);
 
 	return data;

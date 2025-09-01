@@ -1,35 +1,50 @@
 export interface Data {
-	status: Status;
-	data: {
-		status: Status;
-		region: Region;
-		roles: string[];
-		results: {
-			services: {
-				redis: boolean;
-				database: boolean;
-			};
-			stats: {
-				servers_count: number;
-				online: number;
-				session: number;
-				server: {
-					cpus: number;
-					active_connections: number;
-					wait_time: number;
-					workers: Workers[];
-					cpu_load: number;
-					timers: number;
-				};
-			};
-		};
-		strict: boolean;
-		server_issue?: string;
-		version: string;
-	};
+	status: Status.ok;
+	server_issue: string[] | null;
+	data: (ServerData | FetchingError)[];
+	update_at: string;
 }
 
-export type Status = 'ok' | 'error';
+export interface FetchingError {
+	status: Status.error;
+	error: string;
+}
+
+export interface ServerData {
+	status: Status.ok;
+	region: Region;
+	roles: string[];
+	results: {
+		services: {
+			redis: boolean;
+			database: boolean;
+		};
+		stats: {
+			servers_count: number;
+			online: number;
+			session: number;
+			server: {
+				cpus: number;
+				active_connections: number;
+				wait_time: number;
+				workers: Workers[];
+				cpu_load: number;
+				timers: number;
+			};
+		};
+	};
+	strict: boolean;
+	server_issue: string | null;
+	version: string;
+}
+
+export enum Status {
+	ok = 'ok',
+	error = 'error',
+	loading = 'loading',
+	reconnecting = 'reconnecting',
+}
+
 type Region =
 	| 'us-east'
 	| 'eu-west'
