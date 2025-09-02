@@ -26,7 +26,6 @@ const useWebSocket = (url: string) => {
 			wsRef.current = ws;
 
 			ws.onopen = () => {
-				console.log('✅ Connected to server');
 				setData({ status: Status.loading, data: 'Loading...' });
 				reconnectAttempts.current = 0;
 			};
@@ -54,7 +53,6 @@ const useWebSocket = (url: string) => {
 			if (!isMounted) return;
 
 			const timeout = Math.min(1000 * 2 ** reconnectAttempts.current, 30000);
-			console.log(`🔄 Attempting to reconnect in ${timeout / 1000}s...`);
 			setData({
 				status: Status.reconnecting,
 				data: `🔄 Attempting to reconnect in ${timeout / 1000}s...`,

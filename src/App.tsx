@@ -21,7 +21,7 @@ function App() {
 				) : data.status === Status.loading ? (
 					<Loading />
 				) : data.status === Status.reconnecting ? (
-					<p className='flex items-center'>🔄 reconnecting...</p>
+					<p className='flex items-center'>{data.data}</p>
 				) : (
 					<p className='text-red-500'>Error: {data.data}</p>
 				)}
