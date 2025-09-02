@@ -15,7 +15,6 @@ type WebsocketData = SuccessWebsocketData | ErrorWebsocketData;
 const useWebSocket = (url: string) => {
 	const [data, setData] = useState<WebsocketData>();
 	const reconnectAttempts = useRef(0);
-	const wsRef = useRef<WebSocket | null>(null);
 
 	useEffect(() => {
 		let isMounted = true;
@@ -23,7 +22,6 @@ const useWebSocket = (url: string) => {
 		const connect = () => {
 			if (!isMounted) return;
 			const ws = new WebSocket(url);
-			wsRef.current = ws;
 
 			ws.onopen = () => {
 				setData({ status: Status.loading, data: 'Loading...' });
@@ -68,7 +66,6 @@ const useWebSocket = (url: string) => {
 
 		return () => {
 			isMounted = false;
-			wsRef.current?.close();
 		};
 	}, [url]);
 
