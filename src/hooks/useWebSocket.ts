@@ -43,7 +43,6 @@ const useWebSocket = (url: string) => {
 			ws.onerror = (err) => {
 				console.error('❌ WebSocket error:', err);
 				setData({ status: Status.error, data: '❌ WebSocket error' });
-				reconnect();
 			};
 
 			ws.onclose = () => {
