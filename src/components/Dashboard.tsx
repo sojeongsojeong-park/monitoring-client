@@ -20,7 +20,9 @@ const Dashboard = ({ data }: DashboardProps) => {
 					<div className='text-sm'>HEALTH CHECK</div>
 					<div>{data.status === Status.ok ? '🟢' : '🔴'}</div>
 				</Box>
-				<p>UPDATE AT: {dayjs(data.update_at).format('YYYY.MM.DD HH:mm')}</p>
+				<p className='text-sm'>
+					UPDATE AT: {dayjs(data.update_at).format('YYYY.MM.DD HH:mm')}
+				</p>
 				{data.server_issue && (
 					<p className='text-2xl text-center text-red-500'>
 						{data.server_issue}

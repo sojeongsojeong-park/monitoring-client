@@ -38,6 +38,9 @@ const Modal = ({ data, onClose }: IModalProps) => {
 							redis
 						</Label>
 					</div>
+					{data.server_issue && (
+						<p className='text-red-500'>{data.server_issue}</p>
+					)}
 
 					<div className='px-4'>
 						<span className='ml-2 text-lg font-bold'>workers</span>
@@ -95,7 +98,9 @@ const Modal = ({ data, onClose }: IModalProps) => {
 						</div>
 					</div>
 				</div>
-				<button className=' text-white bg-[#bd4ed3] mt-4' onClick={onClose}>
+				<button
+					className=' text-white bg-[#bd4ed3] mt-4 ml-4'
+					onClick={onClose}>
 					Close
 				</button>
 			</div>

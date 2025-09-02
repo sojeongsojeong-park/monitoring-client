@@ -40,6 +40,9 @@ const RegionCard = ({ server, handleModalOpen }: RegionCardProps) => {
 					)}
 				</div>
 			</div>
+			{server.server_issue && (
+				<p className='text-red-500'>{server.server_issue}</p>
+			)}
 			<div className='grid items-start grid-cols-3 gap-4'>
 				{displayData.map((data) => (
 					<div key={data.id} className='flex flex-col items-center h-full'>
